@@ -1,0 +1,170 @@
+{
+  "name": "URL Shortner",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7fddb4ff-8263-4151-ba6f-e0e106ca167f",
+              "name": "URL",
+              "value": "={{ $json.data.tiny_url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        96,
+        0
+      ],
+      "id": "a0f45c05-acff-4688-a425-23c2ae02c1f9",
+      "name": "Shortner"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tinyurl.com/create",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.chatInput }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -112,
+        0
+      ],
+      "id": "48b8a565-b1e0-4702-8518-850ed7b71c0f",
+      "name": "URL Shortner",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "fbD6PTVRn5bRkBWP",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// TinyURL ta previous node theke asche\nconst tinyUrl = $json.URL || $json.data?.tiny_url;\n\n// Final message build\nconst message = `Congratulations! Here is your shortened URL: ${tinyUrl}`;\n\nreturn [\n  {\n    message: message\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        304,
+        0
+      ],
+      "id": "a7e75c48-7b6d-4588-aa1b-c1f96d2313a5",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "URL Shortner",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -368,
+        0
+      ],
+      "id": "fefd19b8-ff7a-48b8-8c97-3cf5e206013b",
+      "name": "Webhook",
+      "webhookId": "d7ebbb77-58d1-4d0c-864f-be13b83477c7"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        528,
+        0
+      ],
+      "id": "f29015b3-3ae2-4781-82d4-5e5a67026737",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Shortner": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URL Shortner": {
+      "main": [
+        [
+          {
+            "node": "Shortner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "URL Shortner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "331b8aa5-6efd-4d99-918a-b4090bb36f99",
+  "meta": {
+    "instanceId": "bf1ac5cbdd331527e3d1c14d616ef1cedcb1fb4988b92403f4f2f7b522152b98"
+  },
+  "id": "VRbaBrIJA9E9io1JQQLo6",
+  "tags": []
+}
