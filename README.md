@@ -58,7 +58,7 @@ Frontend repository:
 https://github.com/Masud744/url-shortener-ui
 
 Live UI:
-https://masud744.github.io/url-shortener-ui/
+https://masud744-url-shortener.netlify.app/
 
 The frontend is a static website hosted on GitHub Pages and communicates with this backend using the webhook endpoint.
 
