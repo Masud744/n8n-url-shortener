@@ -20,6 +20,25 @@ This makes the system lightweight, scalable, and easy to maintain.
 
 ---
 
+## Frontend UI
+
+A separate frontend UI has been built to interact with this backend.
+
+Frontend repository:
+https://github.com/Masud744/url-shortener-ui
+
+Live UI:
+https://masud744-url-shortener.netlify.app/
+
+The frontend is a static website hosted on GitHub Pages and communicates with this backend using the webhook endpoint.
+
+##  Demo Video
+
+[![Demo Video](https://img.youtube.com/vi/_utEkyYTlkE/0.jpg)](https://youtu.be/_utEkyYTlkE)
+
+
+---
+
 ## How It Works
 
 1. A client sends a POST request containing a long URL to the n8n webhook.
@@ -47,20 +66,6 @@ The n8n workflow follows these steps:
 - Webhooks
 - External URL Shortening API
 - JSON-based request and response handling
-
----
-
-## Frontend UI
-
-A separate frontend UI has been built to interact with this backend.
-
-Frontend repository:
-https://github.com/Masud744/url-shortener-ui
-
-Live UI:
-https://masud744-url-shortener.netlify.app/
-
-The frontend is a static website hosted on GitHub Pages and communicates with this backend using the webhook endpoint.
 
 ---
 
