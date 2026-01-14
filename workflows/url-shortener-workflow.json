@@ -1,0 +1,172 @@
+{
+  "name": "URL Shortner",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7fddb4ff-8263-4151-ba6f-e0e106ca167f",
+              "name": "URL",
+              "value": "={{ $json.data.tiny_url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        0
+      ],
+      "id": "766ab784-902e-4f49-8d29-b9226f9df3ec",
+      "name": "Shortner"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tinyurl.com/create",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.body.url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        256,
+        0
+      ],
+      "id": "c8dafc9e-eb89-47ab-9b57-9a10f86c4c9c",
+      "name": "URL Shortner",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "CUE7Bgn430ZPLiwe",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Always read from the previous URL Shortener node\n// Adjust key based on your Shortener node output\n\nconst shortUrl =\n  $json.shortUrl ||\n  $json.data?.shortUrl ||\n  $json.data?.tiny_url ||\n  $json.URL;\n\n// Safety check\nif (!shortUrl) {\n  throw new Error(\"shortUrl not found from shortener node\");\n}\n\n// Return CLEAN structured data (NO MESSAGE)\nreturn [\n  {\n    json: {\n      shortUrl: shortUrl\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        0
+      ],
+      "id": "3993cf5a-795d-44ae-83e4-09cd973b4b49",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "URL Shortner",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        0
+      ],
+      "id": "d357a684-df50-4e5f-9601-f90cc510753a",
+      "name": "Webhook",
+      "webhookId": "d7ebbb77-58d1-4d0c-864f-be13b83477c7"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"shortUrl\": \"{{ $json.shortUrl }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        896,
+        0
+      ],
+      "id": "f83429e0-c8be-49e7-b1af-81434d375455",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Shortner": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URL Shortner": {
+      "main": [
+        [
+          {
+            "node": "Shortner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "URL Shortner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "8b92ecb2-0316-4a37-922e-19e684acb3a5",
+  "meta": {
+    "instanceId": "1664e9cfffd4290dc8241a338f9d6ac40daca84464ea93a16d7a6a05e08235f5"
+  },
+  "id": "EAkC9Efe5umiGLpv",
+  "tags": []
+}
